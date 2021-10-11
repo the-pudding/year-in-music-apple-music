@@ -164,7 +164,7 @@ function appendLogin(choices,container){
                     let aTag = d3.select(this)
                         .append("a")
                         .attr("href","https://safe-ocean-35530.herokuapp.com/applemusic")
-                         // .attr("href","https://mysterious-harbor-74984.herokuapp.com/applemusic")
+                        //  .attr("href","https://mysterious-harbor-74984.herokuapp.com/applemusic")
 
                     aTag.on("click",function(d){
                       d3.select(this).select("span").style("background-color","#000000").style("color","white").html("Connecting...")
@@ -221,6 +221,52 @@ function appendLogin(choices,container){
                 // resolve(selected);
 
                 //return resolve(selected);
+            })
+            ;
+
+        scrollBottom();
+    })
+}
+
+
+async function appendAppleAuthorization(choices,container,setupMusicKit){
+
+    return new Promise(async function(resolve){
+
+        let optionWrapper = d3.select(container).append("div")
+
+        let options = optionWrapper
+            .attr("class","options align-right")
+            .selectAll("p")
+            .data(choices)
+            .enter()
+            .append("p")
+            .append("span")
+            .text(d => d);
+
+        options
+            .on("click", async function(d,i){
+
+                let appleData = await setupMusicKit.authorize().then(async (token) => {
+                    return await getAppleData.init(setupMusicKit,token);
+                })
+
+                let selected = d3.select(this).text();
+
+                options
+                    .style("display",function(d,i){
+                        if(d3.select(this).text() != selected){
+                            return "none";
+                        }
+                        return null;
+                    })
+                    .classed("selected-option",function(d,i){
+                        if(d3.select(this).text() == selected){
+                            return true;
+                        }
+                        return false;
+                    })
+                resolve([selected,optionWrapper.node(),appleData]);
             })
             ;
 
@@ -687,7 +733,7 @@ async function musicLoad(){
 
 async function appleSequence(){
 
-
+    console.log("money");
 
     let appleToken = urlParameter.get('dev_token');
     //await typeOutText.typeOut("Let's get you logged into Apple Music",".chat-wrapper",1000).then(scrollBottom)
@@ -704,11 +750,14 @@ async function appleSequence(){
     console.log(setupMusicKit);
     console.log("music kit all authorized");
 
-    let appleData = await setupMusicKit.authorize().then(async (token) => {
-        return await getAppleData.init(setupMusicKit,token);
-    })
+    let response = await appendAppleAuthorization(["Yes","No"],".chat-wrapper",setupMusicKit)
 
-    return appleData;
+    return response[2];
+    // let appleData = await setupMusicKit.authorize().then(async (token) => {
+    //     return await getAppleData.init(setupMusicKit,token);
+    // })
+
+    // return appleData;
 
 
 
