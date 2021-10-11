@@ -36,7 +36,14 @@ function addLine(textToAdd,container, postDelay){
     })
 }
 
-function specialScore(textToType,container, postDelay){
+function specialScore(platformSet,textToType,container, postDelay){
+
+
+    let platform = "spotify";
+    if(platformSet == "apple"){
+        platform = "apple music";
+    }
+
     return new Promise(function(resolve){
 
         let element = d3.select(container)
@@ -56,7 +63,7 @@ function specialScore(textToType,container, postDelay){
               }
           })
           .pause(0)
-          .type("> Your spotify was pretty good.", {speed:20,delay: 1500})
+          .type(`> Your ${platform} was pretty good.`, {speed:20,delay: 1500})
           .type(" jk", {speed: 100, delay: 2000})
           .delete(-15, {speed: 150, delay:1000})
           .type("bad.", {speed:200,delay: 2000})

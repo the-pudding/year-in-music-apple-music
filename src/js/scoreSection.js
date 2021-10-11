@@ -791,7 +791,7 @@ async function init(data,token, fragments, loadingOutput,platform){
       isBasic = determineBasicness(data);
     }
 
-    await typeOutText.specialScore(specialFragmentObject.specialFragment.join("-"),".score-chat-special",500).then(scrollBottom)
+    await typeOutText.specialScore(platformSet,specialFragmentObject.specialFragment.join("-"),".score-chat-special",500).then(scrollBottom)
 
     await typeOutText.typeOut(`> Thank your obsessions with ${arrayToSentence(specialFragmentObject.specialObsession)} for that.`,".score-chat",1500).then(scrollBottom)
 

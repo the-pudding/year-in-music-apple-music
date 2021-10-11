@@ -148,8 +148,8 @@ function appendLogin(choices,container){
                 if(i==0){
                     let aTag = d3.select(this)
                         .append("a")
-                         .attr("href","https://stark-ocean-68179.herokuapp.com/login")
-                         //.attr("href","https://dreadful-spider-05298.herokuapp.com/login")
+                        //  .attr("href","https://stark-ocean-68179.herokuapp.com/login")
+                         .attr("href","https://dreadful-spider-05298.herokuapp.com/login")
 
                     aTag.on("click",function(d){
                       d3.select(this).select("span").style("background-color","#000000").style("color","white").html("Connecting...")
@@ -228,6 +228,52 @@ function appendLogin(choices,container){
     })
 }
 
+async function appendAppleAuthorizationLogOut(choices,container,setupMusicKit){
+
+    return new Promise(async function(resolve){
+
+        let optionWrapper = d3.select(container).append("div")
+
+        let options = optionWrapper
+            .attr("class","options align-right")
+            .selectAll("p")
+            .data(choices)
+            .enter()
+            .append("p")
+            .append("span")
+            .text(d => d);
+
+        options
+            .on("click", async function(d,i){
+
+                let appleData = await setupMusicKit.unauthorize().then(async (token) => {
+
+                    console.log(token);
+                    // return await getAppleData.init(setupMusicKit,token);
+                })
+
+                // let selected = d3.select(this).text();
+
+                // options
+                //     .style("display",function(d,i){
+                //         if(d3.select(this).text() != selected){
+                //             return "none";
+                //         }
+                //         return null;
+                //     })
+                //     .classed("selected-option",function(d,i){
+                //         if(d3.select(this).text() == selected){
+                //             return true;
+                //         }
+                //         return false;
+                //     })
+                // resolve([selected,optionWrapper.node(),appleData]);
+            })
+            ;
+
+        scrollBottom();
+    })
+}
 
 async function appendAppleAuthorization(choices,container,setupMusicKit){
 
@@ -750,7 +796,11 @@ async function appleSequence(){
     console.log(setupMusicKit);
     console.log("music kit all authorized");
 
-    let response = await appendAppleAuthorization(["Yes","No"],".chat-wrapper",setupMusicKit)
+    await typeOutText.typeOut("Alrighty. A new window will pop open asking for your Apple info.",".chat-wrapper",1000).then(scrollBottom)
+
+    let response = await appendAppleAuthorization(["Sounds good!","Wait, screw this."],".chat-wrapper",setupMusicKit)
+
+    // await appendAppleAuthorizationLogOut(["Yes","No"],".chat-wrapper",setupMusicKit)
 
     return response[2];
     // let appleData = await setupMusicKit.authorize().then(async (token) => {
@@ -769,8 +819,8 @@ async function loginSequence(){
 
         //await expandAscii();
 
-        // await typeOutText.typeOut("Hi, I'm an A.I. trained to evaluate musical taste. To get started, I'll need to see  your Spotify or Apple Music.",".chat-wrapper",1000).then(scrollBottom)
-        // await typeOutText.typeOut("I'm just gonna look at what you listen to. I won't post or change anything.",".chat-wrapper",0).then(scrollBottom)
+        await typeOutText.typeOut("Hi, I'm an A.I. trained to evaluate musical taste. To get started, I'll need to see  your Spotify or Apple Music.",".chat-wrapper",1000).then(scrollBottom)
+        await typeOutText.typeOut("I'm just gonna look at what you listen to. I won't post or change anything.",".chat-wrapper",0).then(scrollBottom)
 
         loginResponse = await appendLogin(["login spotify","login apple","how do you know what's good?"],".chat-wrapper");
         if(loginResponse[0] == "how do you know what's good?"){
