@@ -103,7 +103,7 @@ async function init() {
 
 
     await introPage.init(swiper);  
-    await aiLoading.init();
+    // await aiLoading.init();
     await swiper.slideNext();
   
     

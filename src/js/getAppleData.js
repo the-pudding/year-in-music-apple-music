@@ -36,9 +36,26 @@ async function init(setupMusicKit,token){
     console.log(setupMusicKit);
 
     let recentPlayed = await setupMusicKit.api.recentPlayed();
+
+    let reco = await setupMusicKit.api.recommendations();
+
+    let playlistForYou = null;
+
+    for (let playlist in reco){
+        let title = reco[playlist].attributes.title.stringForDisplay;
+        if(title == "Made for You"){
+            let items = reco[playlist].relationships.contents.data;
+            for (let item in items){
+                if(items[item].attributes.name == "Favorites Mix"){
+                    playlistForYou = items[item].id;
+                }
+            }
+        }
+    }
+
     let recentAdded = await setupMusicKit.api.library.collection('recently-added', null, null);
     let recentTracks = await fetch(`https://api.music.apple.com/v1/me/recent/played/tracks`, { headers: apiHeaders() }).then(r => r.json());
-    let forYouPlaylist = await fetch(`https://api.music.apple.com/v1/catalog/us/playlists?ids=pl.pm-20e9f373919da080d115c5c57ada5d99`, { headers: apiHeaders() })
+    let forYouPlaylist = await fetch(`https://api.music.apple.com/v1/catalog/us/playlists?ids=${playlistForYou}`, { headers: apiHeaders() })
         .then(r => { 
             return r.json();
         })
