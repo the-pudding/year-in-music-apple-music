@@ -164,7 +164,7 @@ function appendLogin(choices,container){
                     let aTag = d3.select(this)
                         .append("a")
                         .attr("href","https://safe-ocean-35530.herokuapp.com/applemusic")
-                        //  .attr("href","https://mysterious-harbor-74984.herokuapp.com/applemusic")
+                        //   .attr("href","https://mysterious-harbor-74984.herokuapp.com/applemusic")
 
                     aTag.on("click",function(d){
                       d3.select(this).select("span").style("background-color","#000000").style("color","white").html("Connecting...")
