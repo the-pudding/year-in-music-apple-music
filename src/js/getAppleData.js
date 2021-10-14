@@ -38,6 +38,15 @@ async function init(setupMusicKit,token){
     let recentPlayed = await setupMusicKit.api.recentPlayed();
 
     let reco = await setupMusicKit.api.recommendations();
+    console.log(reco);
+
+    console.log("ALT RECOS");
+
+    let recoAlt = await fetch(`https://api.music.apple.com/v1/me/recommendations?l=en-US`, { headers: apiHeaders() }).then(r => r.json());
+
+    console.log(recoAlt);
+
+
 
     let playlistForYou = null;
 

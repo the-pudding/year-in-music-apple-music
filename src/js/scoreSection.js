@@ -732,6 +732,8 @@ async function init(data,token, fragments, loadingOutput,platform){
       });
     }
 
+    console.log(data);
+
 
     let trackFragments = determineTrackFragment(data,fragments);
     let artistFragments = determineArtistFragment(data,fragments);
@@ -857,7 +859,7 @@ async function init(data,token, fragments, loadingOutput,platform){
 
     reportContainer.append("p")
         .attr("class","top-margin bold")
-        .text("You listen to these tracks too much:")
+        .text("You listen to these too much:")
 
     reportContainer.append("div")
         .append("ul")
@@ -866,9 +868,18 @@ async function init(data,token, fragments, loadingOutput,platform){
           if(platformSet != "apple"){
             return data.tracks.filter(d => d.timeFrame == "medium_term")[0].trackData.slice(0,5)
           }
-          return data.tracks.slice(0,5).map(function(d){
-            return {name: d.name, artists:[{name:d.item.attributes.artistName}]};
-          });
+          else {
+
+            if(data.recentAdded.filter(function(d){ return d["type"] != "library-playlists"; }).length > 0){
+              return data.recentAdded.filter(function(d){ return d["type"] != "library-playlists"; }).slice(0,5).map(function(d){
+                return {name: d.attributes.name, artists:[{name:d.attributes.name}]};
+              });
+            }
+            return data.tracks.slice(0,5).map(function(d){
+              return {name: d.name, artists:[{name:d.item.attributes.artistName}]};
+            });
+          }
+          
         })
         .enter()
         .append("li")
