@@ -797,8 +797,7 @@ async function appleSequence(){
 
     let appleToken = urlParameter.get('dev_token');
     //await typeOutText.typeOut("Let's get you logged into Apple Music",".chat-wrapper",1000).then(scrollBottom)
-
-    
+    urlParameter.set('dev_token',null)
 
     if (MusicKit) {
         setupMusicKit = await musicKitSetup.init(appleToken);
@@ -895,11 +894,17 @@ async function init(data,token,clientParam,deauth){
 
     if(deauth) {
         deauthValue = deauth;
+        urlParameter.set('deauth',null)
+
     }
 
 
     if (clientParam){
         client = clientParam;
+        urlParameter.set('client',null)
+
+
+
         data = await appleSequence();
 
         console.log(data);
@@ -1153,7 +1158,7 @@ async function init(data,token,clientParam,deauth){
     }
     else if(response[0] == "No") {
         let adjust = ""
-        if(platformSet != "apple"){
+        if(platform != "apple"){
           adjust = "top 10"
         }
         await typeOutText.typeOut(`Weird, cause it's definitely in your ${adjust} most-played.`,".chat-wrapper",0).then(scrollBottom)
