@@ -83,6 +83,8 @@ function scrollTick(tickAmount){
 
 function init(imageSet,container){
 
+    console.log(imageSet);
+
     let yScaleJitter = d3.scaleLinear().domain([0,1]).range([-1,1]);
     let xScaleJitter = d3.scaleLinear().domain([0,1]).range([11,15]);
 

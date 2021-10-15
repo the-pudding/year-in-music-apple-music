@@ -8,10 +8,12 @@ import urlParameter from './utils/url-parameter'
 import musicKitSetup from './musicKitSetup'
 import getAppleData from "./getAppleData";
 
+let deauthValue = null;
 let client = null;
 let imageWidth = 120;
 let albumsShifted = 0;
 let coverFlowImages = [];
+let setupMusicKit = null;
 let scoreNumContainer = d3.select(".score-num");
 let tracks = null;
 let tokenExists = false;
@@ -163,8 +165,8 @@ function appendLogin(choices,container){
                 else if(i==1){
                     let aTag = d3.select(this)
                         .append("a")
-                        // .attr("href","https://safe-ocean-35530.herokuapp.com/applemusic")
-                          .attr("href","https://mysterious-harbor-74984.herokuapp.com/applemusic")
+                        .attr("href","https://safe-ocean-35530.herokuapp.com/applemusic")
+                        //   .attr("href","https://mysterious-harbor-74984.herokuapp.com/applemusic")
 
                     aTag.on("click",function(d){
                       d3.select(this).select("span").style("background-color","#000000").style("color","white").html("Connecting...")
@@ -791,10 +793,12 @@ async function appleSequence(){
 
     console.log("money");
 
+    console.log(deauthValue);
+
     let appleToken = urlParameter.get('dev_token');
     //await typeOutText.typeOut("Let's get you logged into Apple Music",".chat-wrapper",1000).then(scrollBottom)
 
-    let setupMusicKit = null;
+    
 
     if (MusicKit) {
         setupMusicKit = await musicKitSetup.init(appleToken);
@@ -803,8 +807,16 @@ async function appleSequence(){
         let loaded = await musicLoad();
         setupMusicKit = await musicKitSetup.init(appleToken);
     }
-    console.log(setupMusicKit);
-    console.log("music kit all authorized");
+    if(deauthValue){
+        let appleData = await setupMusicKit.unauthorize().then(async (token) => {
+            await typeOutText.typeOut("You've been logged out of Apple Music.",".chat-wrapper",0).then(scrollBottom)
+            await typeOutText.typeOut("Reloading site...",".chat-wrapper",0).then(scrollBottom)
+
+            location.href = "/"
+        })
+    }
+    
+
 
     await typeOutText.typeOut("Alrighty. A new window will pop open asking for your Apple info.",".chat-wrapper",1000).then(scrollBottom)
 
@@ -879,7 +891,11 @@ function getClosestImage(imageArray){
     return null;
 }
 
-async function init(data,token,clientParam){
+async function init(data,token,clientParam,deauth){
+
+    if(deauth) {
+        deauthValue = deauth;
+    }
 
 
     if (clientParam){
@@ -1090,28 +1106,89 @@ async function init(data,token,clientParam){
 
     // **** 1
 
-    // await sleeper(2000);
+    await sleeper(2000);
 
-    // coverFlow.scrollTick(1);
-    // albumsShifted = albumsShifted + 1;
+    coverFlow.scrollTick(1);
+    albumsShifted = albumsShifted + 1;
 
-    // await typeOutText.typeOut("Analyzing your listening history...",".chat-wrapper",500).then(scrollBottom)
+    await typeOutText.typeOut("Analyzing your listening history...",".chat-wrapper",500).then(scrollBottom)
 
-    // incrementScore(90+Math.floor(Math.random()*10));
-    // d3.select(".score-section").style("visibility","visible");
+    incrementScore(90+Math.floor(Math.random()*10));
+    d3.select(".score-section").style("visibility","visible");
 
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
 
-    // await typeOutText.typeOut("lol",".chat-wrapper",500).then(scrollBottom)
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
+    await typeOutText.typeOut("lol",".chat-wrapper",500).then(scrollBottom)
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
 
-    // await typeOutText.typeOut("omg",".chat-wrapper",500).then(scrollBottom)
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
+    await typeOutText.typeOut("omg",".chat-wrapper",500).then(scrollBottom)
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
 
-    // await typeOutText.typeOut("okay hold up",".chat-wrapper",0).then(scrollBottom)
+    await typeOutText.typeOut("okay hold up",".chat-wrapper",0).then(scrollBottom)
+
+    await appendThinking(".chat-wrapper").then(scrollBottom)
+    await sleeper(2000);
+    await removeThinking(".chat-wrapper").then(scrollBottom)
+
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+    coverFlow.raiseCover(albumsShifted-1);
+
+    await typeOutText.typeOut(`Do you really listen to ${parseTrackName.parseTrack(coverFlowImages[albumsShifted-1].item)}?`,".chat-wrapper",0).then(scrollBottom)
+
+    response = await appendOptions(["Yes","No","I share this account with someone else"],".chat-wrapper")
+    incrementScore(70+Math.floor(Math.random()*10));
+    if(response[0] == "Yes"){
+        await typeOutText.typeOut("Like ironically?",".chat-wrapper",0).then(scrollBottom)
+        response = await appendOptions(["lol yea","no..."],".chat-wrapper")
+        if(response == "lol yea"){
+            await typeOutText.typeOut("Right...",".chat-wrapper",0).then(scrollBottom)
+        }
+        else {
+            await typeOutText.typeOut("Cool...",".chat-wrapper",0).then(scrollBottom)
+        }
+    }
+    else if(response[0] == "No") {
+        let adjust = ""
+        if(platformSet != "apple"){
+          adjust = "top 10"
+        }
+        await typeOutText.typeOut(`Weird, cause it's definitely in your ${adjust} most-played.`,".chat-wrapper",0).then(scrollBottom)
+    }
+    else {
+      await typeOutText.typeOut(`yeah totally...`,".chat-wrapper").then(scrollBottom)
+    }
+
+    coverFlow.raiseCover(99);
+    await sleeper(1000);
+
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+
+    await appendThinking(".chat-wrapper").then(scrollBottom)
+    await sleeper(2000);
+    await removeThinking(".chat-wrapper").then(scrollBottom)
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+
+    console.log(genres);
+
+    await typeOutText.typeOut(`Seeing plenty of ${genres[0][0]}.`,".chat-wrapper",1500).then(scrollBottom);
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+
+    await typeOutText.typeOut(`Finding a lot of ${coverFlowImages[albumsShifted-1].item.name}.`,".chat-wrapper",0).then(scrollBottom)
+    await typeOutText.typeOut("Like... a LOT.",".chat-wrapper",500).then(scrollBottom)
+
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+
+    // **** 1
+
+
 
     // await appendThinking(".chat-wrapper").then(scrollBottom)
     // await sleeper(2000);
@@ -1119,408 +1196,347 @@ async function init(data,token,clientParam){
 
     // coverFlow.scrollTick(1)
     // albumsShifted = albumsShifted + 1;
+
+    // await sleeper(500);
     // coverFlow.raiseCover(albumsShifted-1);
-
-    // await typeOutText.typeOut(`Do you really listen to ${parseTrackName.parseTrack(coverFlowImages[albumsShifted-1].item)}?`,".chat-wrapper",0).then(scrollBottom)
-
-    // response = await appendOptions(["Yes","No","I share this account with someone else"],".chat-wrapper")
-    // incrementScore(70+Math.floor(Math.random()*10));
-    // if(response[0] == "Yes"){
-    //     await typeOutText.typeOut("Like ironically?",".chat-wrapper",0).then(scrollBottom)
-    //     response = await appendOptions(["lol yea","no..."],".chat-wrapper")
-    //     if(response == "lol yea"){
-    //         await typeOutText.typeOut("Right...",".chat-wrapper",0).then(scrollBottom)
+    //
+    // await sleeper(1000);
+    // await typeOutText.typeOut(`So... ${parseTrackName.parseTrack(coverFlowImages[albumsShifted-1].item)}?`,".chat-wrapper",0).then(scrollBottom)
+    //
+    // response = await appendOptions(["I love it","it's ok","I share this account with someone else"],".chat-wrapper")
+    // incrementScore(60+Math.floor(Math.random()*10));
+    //
+    // if(response[0] == "I love it"){
+    //     await typeOutText.typeOut(`lol`,".chat-wrapper").then(scrollBottom)
+    //     await sleeper(startingSleeperTime);
+    //     await typeOutText.typeOut(`wait`,".chat-wrapper").then(scrollBottom)
+    //     await sleeper(startingSleeperTime);
+    //     await typeOutText.typeOut(`seriously?`,".chat-wrapper").then(scrollBottom)
+    //     response = await appendOptions(["yes","lol no"],".chat-wrapper")
+    //     if(response[0] == "yes"){
+    //         await typeOutText.typeOut(`oh`,".chat-wrapper").then(scrollBottom)
+    //         await sleeper(startingSleeperTime);
+    //         await typeOutText.typeOut(`um`,".chat-wrapper").then(scrollBottom)
+    //         await sleeper(startingSleeperTime);
+    //         await typeOutText.typeOut(`awesome`,".chat-wrapper").then(scrollBottom)
     //     }
     //     else {
-    //         await typeOutText.typeOut("Cool...",".chat-wrapper",0).then(scrollBottom)
+    //         await typeOutText.typeOut(`yeah totally...`,".chat-wrapper").then(scrollBottom)
     //     }
     // }
-    // else if(response[0] == "No") {
-    //     let adjust = ""
-    //     if(platformSet != "apple"){
-    //       adjust = "top 10"
+    // else if (response[0] == "it's okay"){
+    //     await typeOutText.typeOut(`you just listen to it all the time?`,".chat-wrapper").then(scrollBottom)
+    //     response = await appendOptions(["Yes","Not really"],".chat-wrapper")
+    //     if(response[0] == "YES"){
+    //         await typeOutText.typeOut(`thought so`,".chat-wrapper").then(scrollBottom)
     //     }
-    //     await typeOutText.typeOut(`Weird, cause it's definitely in your ${adjust} most-played.`,".chat-wrapper",0).then(scrollBottom)
+    //     else {
+    //         await typeOutText.typeOut(`right...makes total sense`,".chat-wrapper").then(scrollBottom)
+    //     }
     // }
     // else {
-    //   await typeOutText.typeOut(`yeah totally...`,".chat-wrapper").then(scrollBottom)
+    //     await typeOutText.typeOut(`oh thank god`,".chat-wrapper").then(scrollBottom)
     // }
-
+    //
     // coverFlow.raiseCover(99);
     // await sleeper(1000);
 
+
     // coverFlow.scrollTick(1)
     // albumsShifted = albumsShifted + 1;
 
+
+
+    //**********
+
+    await appendThinking(".chat-wrapper").then(scrollBottom)
+    await sleeper(1000);
+    await removeThinking(".chat-wrapper").then(scrollBottom)
+    await typeOutText.typeOut(`oh boy ${parseTrackName.parseTrack(coverFlowImages[albumsShifted -1].item)}.`,".chat-wrapper",500).then(scrollBottom);
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+
+    await appendThinking(".chat-wrapper").then(scrollBottom)
+    await sleeper(1000);
+    await removeThinking(".chat-wrapper").then(scrollBottom)
+
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+    // // if(artistsLong.slice(2,3)[0].images.length > 0){
+    // //     imagesPreloaded = await preloadImages(artistsLong.slice(2,3));
+    // //     await appendImage(imagesPreloaded,".chat-wrapper").then(scrollBottom);
+    // // }
+
+    await typeOutText.typeOut(`oh great another ${coverFlowImages[albumsShifted-1].item.name}  stan...`,".chat-wrapper",1000).then(scrollBottom);
+
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+    await sleeper(1000);
+
+
+
+    if(artistRecentUrl){
+        coverFlow.scrollTick(1)
+        albumsShifted = albumsShifted + 1;
+        await sleeper(500);
+        coverFlow.raiseCover(albumsShifted - 1);
+        await sleeper(1000);
+
+        await typeOutText.typeOut(`You've been listening to a lot of ${artistsRecent[0].name} lately.`,".chat-wrapper").then(scrollBottom)
+        await typeOutText.typeOut("u okay?",".chat-wrapper").then(scrollBottom)
+        response = await appendOptions(["Yeah why","Not really"],".chat-wrapper")
+        incrementScore(50+Math.floor(Math.random()*10));
+        if(response[0] == "Yeah why"){
+            await typeOutText.typeOut("no reason...",".chat-wrapper").then(scrollBottom)
+        }
+        else {
+            await typeOutText.typeOut("listen i'm just a neural net do what you gotta do",".chat-wrapper").then(scrollBottom)
+        }
+    }
+    coverFlow.raiseCover(99);
+    await sleeper(1000);
+
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+
+
+    await appendThinking(".chat-wrapper").then(scrollBottom)
+    await sleeper(1000);
+    await removeThinking(".chat-wrapper").then(scrollBottom)
+    coverFlow.scrollTick(1)
+    albumsShifted = albumsShifted + 1;
+
+    await typeOutText.typeOut(`Of course ${coverFlowImages[albumsShifted-1].item.name}.`,".chat-wrapper",1000).then(scrollBottom);
+
+    // console.log(partyPlaylists,recentPlaylists,workoutPlaylists);
+
+    // if(partyPlaylists.length > 0 || recentPlaylists.length > 0 || workoutPlaylists.length > 0){
+    //   await typeOutText.typeOut(`Now let's check out your playlists..`,".chat-wrapper").then(scrollBottom)
+    //   await appendThinking(".chat-wrapper").then(scrollBottom)
+    //   await sleeper(1000);
+    //   await removeThinking(".chat-wrapper").then(scrollBottom)
+    // }
+
+    // if(recentPlaylists.length > 0){
+
+    //   coverFlow.scrollTick(1)
+    //   albumsShifted = albumsShifted + 1;
+    //   coverFlow.raiseCover(albumsShifted-1);
+
+    //   await typeOutText.typeOut(`Okay so I found your ${recentPlaylists[0].name} playlist.`,".chat-wrapper",1000).then(scrollBottom)
+    //   await typeOutText.typeOut(`Whole lotta ${recentPlaylists[0].topArtists[0][0]} in there.`,".chat-wrapper").then(scrollBottom)
+    //   await typeOutText.typeOut("Was that on purpose?",".chat-wrapper").then(scrollBottom)
+
+    //   response = await appendOptions(["Yes","No"],".chat-wrapper")
+    //   incrementScore(40+Math.floor(Math.random()*10));
+    //   if(response[0] == "Yes"){
+    //       await typeOutText.typeOut("I guess I applaud your honesty...",".chat-wrapper").then(scrollBottom)
+    //       let bestTrack = recentPlaylists[0].trackArray.filter(function(d){
+    //           return d.track.artists.filter(function(d){ return d.name == recentPlaylists[0].topArtists[0][0] }).length > 0
+    //       })[0]
+    //       await typeOutText.typeOut(`"${bestTrack.track.name}" is a helluva opener...`,".chat-wrapper").then(scrollBottom)
+    //   }
+    //   else {
+    //       await typeOutText.typeOut(`riiiiiiiiight`,".chat-wrapper").then(scrollBottom)
+    //   }
+
+    //   coverFlow.raiseCover(99);
+    //   await sleeper(1000);
+
+    // }
+
+
+    // coverFlow.scrollTick(1)
+    // albumsShifted = albumsShifted + 1;
     // await appendThinking(".chat-wrapper").then(scrollBottom)
     // await sleeper(2000);
     // await removeThinking(".chat-wrapper").then(scrollBottom)
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
-
-    // console.log(genres);
-
-    // await typeOutText.typeOut(`Seeing plenty of ${genres[0][0]}.`,".chat-wrapper",1500).then(scrollBottom);
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
-
-    // await typeOutText.typeOut(`Finding a lot of ${coverFlowImages[albumsShifted-1].item.name}.`,".chat-wrapper",0).then(scrollBottom)
-    // await typeOutText.typeOut("Like... a LOT.",".chat-wrapper",500).then(scrollBottom)
-
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
-
-    // // **** 1
 
 
-
-    // // await appendThinking(".chat-wrapper").then(scrollBottom)
-    // // await sleeper(2000);
-    // // await removeThinking(".chat-wrapper").then(scrollBottom)
-
-    // // coverFlow.scrollTick(1)
-    // // albumsShifted = albumsShifted + 1;
-
-    // // await sleeper(500);
-    // // coverFlow.raiseCover(albumsShifted-1);
-    // //
-    // // await sleeper(1000);
-    // // await typeOutText.typeOut(`So... ${parseTrackName.parseTrack(coverFlowImages[albumsShifted-1].item)}?`,".chat-wrapper",0).then(scrollBottom)
-    // //
-    // // response = await appendOptions(["I love it","it's ok","I share this account with someone else"],".chat-wrapper")
-    // // incrementScore(60+Math.floor(Math.random()*10));
-    // //
-    // // if(response[0] == "I love it"){
-    // //     await typeOutText.typeOut(`lol`,".chat-wrapper").then(scrollBottom)
-    // //     await sleeper(startingSleeperTime);
-    // //     await typeOutText.typeOut(`wait`,".chat-wrapper").then(scrollBottom)
-    // //     await sleeper(startingSleeperTime);
-    // //     await typeOutText.typeOut(`seriously?`,".chat-wrapper").then(scrollBottom)
-    // //     response = await appendOptions(["yes","lol no"],".chat-wrapper")
-    // //     if(response[0] == "yes"){
-    // //         await typeOutText.typeOut(`oh`,".chat-wrapper").then(scrollBottom)
-    // //         await sleeper(startingSleeperTime);
-    // //         await typeOutText.typeOut(`um`,".chat-wrapper").then(scrollBottom)
-    // //         await sleeper(startingSleeperTime);
-    // //         await typeOutText.typeOut(`awesome`,".chat-wrapper").then(scrollBottom)
-    // //     }
-    // //     else {
-    // //         await typeOutText.typeOut(`yeah totally...`,".chat-wrapper").then(scrollBottom)
-    // //     }
-    // // }
-    // // else if (response[0] == "it's okay"){
-    // //     await typeOutText.typeOut(`you just listen to it all the time?`,".chat-wrapper").then(scrollBottom)
-    // //     response = await appendOptions(["Yes","Not really"],".chat-wrapper")
-    // //     if(response[0] == "YES"){
-    // //         await typeOutText.typeOut(`thought so`,".chat-wrapper").then(scrollBottom)
-    // //     }
-    // //     else {
-    // //         await typeOutText.typeOut(`right...makes total sense`,".chat-wrapper").then(scrollBottom)
-    // //     }
-    // // }
-    // // else {
-    // //     await typeOutText.typeOut(`oh thank god`,".chat-wrapper").then(scrollBottom)
-    // // }
-    // //
-    // // coverFlow.raiseCover(99);
-    // // await sleeper(1000);
-
-
-    // // coverFlow.scrollTick(1)
-    // // albumsShifted = albumsShifted + 1;
-
-
-
-    // //**********
-
-    // await appendThinking(".chat-wrapper").then(scrollBottom)
-    // await sleeper(1000);
-    // await removeThinking(".chat-wrapper").then(scrollBottom)
-    // await typeOutText.typeOut(`oh boy ${parseTrackName.parseTrack(coverFlowImages[albumsShifted -1].item)}.`,".chat-wrapper",500).then(scrollBottom);
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
-
-    // await appendThinking(".chat-wrapper").then(scrollBottom)
-    // await sleeper(1000);
-    // await removeThinking(".chat-wrapper").then(scrollBottom)
-
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
-    // // // if(artistsLong.slice(2,3)[0].images.length > 0){
-    // // //     imagesPreloaded = await preloadImages(artistsLong.slice(2,3));
-    // // //     await appendImage(imagesPreloaded,".chat-wrapper").then(scrollBottom);
-    // // // }
-
-    // await typeOutText.typeOut(`oh great another ${coverFlowImages[albumsShifted-1].item.name}  stan...`,".chat-wrapper",1000).then(scrollBottom);
-
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
-    // await sleeper(1000);
-
-
-
-    // if(artistRecentUrl){
-    //     coverFlow.scrollTick(1)
-    //     albumsShifted = albumsShifted + 1;
-    //     await sleeper(500);
-    //     coverFlow.raiseCover(albumsShifted - 1);
-    //     await sleeper(1000);
-
-    //     await typeOutText.typeOut(`You've been listening to a lot of ${artistsRecent[0].name} lately.`,".chat-wrapper").then(scrollBottom)
-    //     await typeOutText.typeOut("u okay?",".chat-wrapper").then(scrollBottom)
-    //     response = await appendOptions(["Yeah why","Not really"],".chat-wrapper")
-    //     incrementScore(50+Math.floor(Math.random()*10));
-    //     if(response[0] == "Yeah why"){
-    //         await typeOutText.typeOut("no reason...",".chat-wrapper").then(scrollBottom)
+    // if(workoutPlaylists.length > 0){
+    //     await typeOutText.typeOut(`I gotta ask. Do you actually work out to your ${workoutPlaylists[0].name} playlist?`,".chat-wrapper").then(scrollBottom)
+    //     response = await appendOptions(["Yes","No"],".chat-wrapper")
+    //     if(response[0] == "Yes"){
+    //         let artistString = null;
+    //         if(workoutPlaylists[0].hasOwnProperty('topArtists')){
+    //           artistString = workoutPlaylists[0].topArtists.slice(0,2);
+    //           if(artistString.length == 1){
+    //               artistString = artistString[0];
+    //           }
+    //           else {
+    //               artistString = artistString[0][0]+" and "+artistString[1][0];
+    //           }
+    //         }
+    //         await typeOutText.typeOut(`sweatin' to ${artistString}! yea get swole lol?`,".chat-wrapper").then(scrollBottom)
     //     }
     //     else {
-    //         await typeOutText.typeOut("listen i'm just a neural net do what you gotta do",".chat-wrapper").then(scrollBottom)
+    //         await typeOutText.typeOut("Weird name i guess lol...",".chat-wrapper").then(scrollBottom)
     //     }
     // }
-    // coverFlow.raiseCover(99);
-    // await sleeper(1000);
+
+
+    // if(partyPlaylists.length > 0){
+    //     await typeOutText.typeOut(`I need to know about the party you made ${partyPlaylists[0].name} for...`,".chat-wrapper").then(scrollBottom)
+    //     response = await appendOptions(["it was fun","it was a disaster","why"],".chat-wrapper")
+    //     if(response[0] == "it was fun"){
+    //         await typeOutText.typeOut(`Yeah I bet.`,".chat-wrapper").then(scrollBottom)
+    //     }
+    //     else if(response[0]=="it was a disaster"){
+    //         await typeOutText.typeOut("yeah who could have expected it lol",".chat-wrapper").then(scrollBottom)
+    //     }
+    //     else {
+    //         let artistString = null;
+    //         if(partyPlaylists[0].hasOwnProperty('topArtists')){
+    //           artistString = partyPlaylists[0].topArtists.slice(0,2);
+    //           if(artistString.length == 1){
+    //               artistString = artistString[0] + " is certainly, um, an interesting pick...";
+    //           }
+    //           else {
+    //               artistString = artistString[0][0]+" and "+artistString[1][0] + " are certainly, um, interesting picks...";
+    //           }
+    //         }
+
+    //         await typeOutText.typeOut(`i mean  ${artistString}`,".chat-wrapper").then(scrollBottom)
+    //     }
+    // }
 
     // coverFlow.scrollTick(1)
     // albumsShifted = albumsShifted + 1;
 
+    // d3.select(".cover-wrapper").transition().duration(1000).style("bottom","-100%");
+    // d3.select(".data-output").transition().duration(1000).style("height","0px");
+    // d3.select(".chat-wrapper").transition().duration(1000).style("padding-bottom","120px");
+    // d3.select(".score-section").transition().duration(1000).style("bottom","10px");
+    // scrollBottom();
+    // await typeOutText.typeOut("One last thing...",".chat-wrapper").then(scrollBottom)
 
-    // await appendThinking(".chat-wrapper").then(scrollBottom)
-    // await sleeper(1000);
-    // await removeThinking(".chat-wrapper").then(scrollBottom)
-    // coverFlow.scrollTick(1)
-    // albumsShifted = albumsShifted + 1;
-
-    // await typeOutText.typeOut(`Of course ${coverFlowImages[albumsShifted-1].item.name}.`,".chat-wrapper",1000).then(scrollBottom);
-
-    // // console.log(partyPlaylists,recentPlaylists,workoutPlaylists);
-
-    // // if(partyPlaylists.length > 0 || recentPlaylists.length > 0 || workoutPlaylists.length > 0){
-    // //   await typeOutText.typeOut(`Now let's check out your playlists..`,".chat-wrapper").then(scrollBottom)
-    // //   await appendThinking(".chat-wrapper").then(scrollBottom)
-    // //   await sleeper(1000);
-    // //   await removeThinking(".chat-wrapper").then(scrollBottom)
-    // // }
-
-    // // if(recentPlaylists.length > 0){
-
-    // //   coverFlow.scrollTick(1)
-    // //   albumsShifted = albumsShifted + 1;
-    // //   coverFlow.raiseCover(albumsShifted-1);
-
-    // //   await typeOutText.typeOut(`Okay so I found your ${recentPlaylists[0].name} playlist.`,".chat-wrapper",1000).then(scrollBottom)
-    // //   await typeOutText.typeOut(`Whole lotta ${recentPlaylists[0].topArtists[0][0]} in there.`,".chat-wrapper").then(scrollBottom)
-    // //   await typeOutText.typeOut("Was that on purpose?",".chat-wrapper").then(scrollBottom)
-
-    // //   response = await appendOptions(["Yes","No"],".chat-wrapper")
-    // //   incrementScore(40+Math.floor(Math.random()*10));
-    // //   if(response[0] == "Yes"){
-    // //       await typeOutText.typeOut("I guess I applaud your honesty...",".chat-wrapper").then(scrollBottom)
-    // //       let bestTrack = recentPlaylists[0].trackArray.filter(function(d){
-    // //           return d.track.artists.filter(function(d){ return d.name == recentPlaylists[0].topArtists[0][0] }).length > 0
-    // //       })[0]
-    // //       await typeOutText.typeOut(`"${bestTrack.track.name}" is a helluva opener...`,".chat-wrapper").then(scrollBottom)
-    // //   }
-    // //   else {
-    // //       await typeOutText.typeOut(`riiiiiiiiight`,".chat-wrapper").then(scrollBottom)
-    // //   }
-
-    // //   coverFlow.raiseCover(99);
-    // //   await sleeper(1000);
-
-    // // }
-
-
-    // // coverFlow.scrollTick(1)
-    // // albumsShifted = albumsShifted + 1;
-    // // await appendThinking(".chat-wrapper").then(scrollBottom)
-    // // await sleeper(2000);
-    // // await removeThinking(".chat-wrapper").then(scrollBottom)
-
-
-    // // if(workoutPlaylists.length > 0){
-    // //     await typeOutText.typeOut(`I gotta ask. Do you actually work out to your ${workoutPlaylists[0].name} playlist?`,".chat-wrapper").then(scrollBottom)
-    // //     response = await appendOptions(["Yes","No"],".chat-wrapper")
-    // //     if(response[0] == "Yes"){
-    // //         let artistString = null;
-    // //         if(workoutPlaylists[0].hasOwnProperty('topArtists')){
-    // //           artistString = workoutPlaylists[0].topArtists.slice(0,2);
-    // //           if(artistString.length == 1){
-    // //               artistString = artistString[0];
-    // //           }
-    // //           else {
-    // //               artistString = artistString[0][0]+" and "+artistString[1][0];
-    // //           }
-    // //         }
-    // //         await typeOutText.typeOut(`sweatin' to ${artistString}! yea get swole lol?`,".chat-wrapper").then(scrollBottom)
-    // //     }
-    // //     else {
-    // //         await typeOutText.typeOut("Weird name i guess lol...",".chat-wrapper").then(scrollBottom)
-    // //     }
-    // // }
-
-
-    // // if(partyPlaylists.length > 0){
-    // //     await typeOutText.typeOut(`I need to know about the party you made ${partyPlaylists[0].name} for...`,".chat-wrapper").then(scrollBottom)
-    // //     response = await appendOptions(["it was fun","it was a disaster","why"],".chat-wrapper")
-    // //     if(response[0] == "it was fun"){
-    // //         await typeOutText.typeOut(`Yeah I bet.`,".chat-wrapper").then(scrollBottom)
-    // //     }
-    // //     else if(response[0]=="it was a disaster"){
-    // //         await typeOutText.typeOut("yeah who could have expected it lol",".chat-wrapper").then(scrollBottom)
-    // //     }
-    // //     else {
-    // //         let artistString = null;
-    // //         if(partyPlaylists[0].hasOwnProperty('topArtists')){
-    // //           artistString = partyPlaylists[0].topArtists.slice(0,2);
-    // //           if(artistString.length == 1){
-    // //               artistString = artistString[0] + " is certainly, um, an interesting pick...";
-    // //           }
-    // //           else {
-    // //               artistString = artistString[0][0]+" and "+artistString[1][0] + " are certainly, um, interesting picks...";
-    // //           }
-    // //         }
-
-    // //         await typeOutText.typeOut(`i mean  ${artistString}`,".chat-wrapper").then(scrollBottom)
-    // //     }
-    // // }
-
-    // // coverFlow.scrollTick(1)
-    // // albumsShifted = albumsShifted + 1;
-
-    // // d3.select(".cover-wrapper").transition().duration(1000).style("bottom","-100%");
-    // // d3.select(".data-output").transition().duration(1000).style("height","0px");
-    // // d3.select(".chat-wrapper").transition().duration(1000).style("padding-bottom","120px");
-    // // d3.select(".score-section").transition().duration(1000).style("bottom","10px");
-    // // scrollBottom();
-    // // await typeOutText.typeOut("One last thing...",".chat-wrapper").then(scrollBottom)
-
-    // // scrollBottom();
-    // // await sleeper(1500);
+    // scrollBottom();
+    // await sleeper(1500);
 
 
 
-    // //**********
+    //**********
 
 
-    // // let randomSong = Math.random();
-    // // if(randomSong < .50){
-    // //   await typeOutText.typeOut("Do you know this song?",".chat-wrapper").then(scrollBottom)
-    // //   await appendAudio("https://p.scdn.co/mp3-preview/baf1953982893c37fb13b65c6b7de4a8e543c1a7?cid=774b29d4f13844c495f206cafdad9c86",".chat-wrapper").then(scrollBottom);
-    // //   response = await appendOptions(["Yes","No"],".chat-wrapper")
-    // //   stopPreview();
-    // //   incrementScore(30+Math.floor(Math.random()*10));
-    // //
-    // //   if(response[0] == "Yes"){
-    // //       await typeOutText.typeOut("Do you like it?",".chat-wrapper").then(scrollBottom)
-    // //       response = await appendOptions(["Yes","No","Kind of"],".chat-wrapper")
-    // //       await typeOutText.typeOut("Makes sense.",".chat-wrapper").then(scrollBottom)
-    // //   }
-    // //   else {
-    // //       await typeOutText.typeOut("Yeah I figured.",".chat-wrapper").then(scrollBottom)
-    // //   }
-    // // }
-    // // else {
-    // //   await typeOutText.typeOut("Do you like this song? ",".chat-wrapper").then(scrollBottom)
-    // //   await appendAudio("https://p.scdn.co/mp3-preview/21b9abd3cd2eea634e17a917196fdd5ba2e82670?cid=774b29d4f13844c495f206cafdad9c86",".chat-wrapper").then(scrollBottom);
-    // //   response = await appendOptions(["Yes","No","Hell no"],".chat-wrapper")
-    // //   stopPreview();
-    // //   incrementScore(20+Math.floor(Math.random()*10));
-    // //
-    // //   if(response[0] == "Yes"){
-    // //
-    // //       await appendThinking(".chat-wrapper").then(scrollBottom)
-    // //       await sleeper(2000);
-    // //       await removeThinking(".chat-wrapper").then(scrollBottom)
-    // //       await sleeper(1000);
-    // //       await appendThinking(".chat-wrapper").then(scrollBottom)
-    // //       await sleeper(1000);
-    // //       await removeThinking(".chat-wrapper").then(scrollBottom)
-    // //
-    // //       await typeOutText.typeOut("okay things are making more sense now...",".chat-wrapper").then(scrollBottom)
-    // //
-    // //   }
-    // //   else if(response[0] == "No") {
-    // //       await typeOutText.typeOut("Seriously? It's fine if you do.",".chat-wrapper").then(scrollBottom)
-    // //       response = await appendOptions(["okay I do","no way"],".chat-wrapper")
-    // //       if(response[0] == "okay I do"){
-    // //           await typeOutText.typeOut("lolololololololol",".chat-wrapper").then(scrollBottom)
-    // //           await typeOutText.typeOut("sorry i meant to send that to someone else",".chat-wrapper").then(scrollBottom)
-    // //       }
-    // //       else {
-    // //           await typeOutText.typeOut("Oh watch out everybody we got a cool person over here!",".chat-wrapper").then(scrollBottom)
-    // //       }
-    // //   }
-    // //   else {
-    // //       await typeOutText.typeOut("Who you trying to impress?",".chat-wrapper").then(scrollBottom)
-    // //       await typeOutText.typeOut("Let's keep going",".chat-wrapper").then(scrollBottom)
-    // //   }
-    // // }
-    // //
-    // // await typeOutText.typeOut("Which record have you made out to?",".chat-wrapper").then(scrollBottom)
-    // //
-    // // let makeoutTracks = d3.groups(tracks,( d => d.album.name ))//.sort(function(a,b){return b[1].length - a[1].length });
-    // //
-    // // makeoutTracks = makeoutTracks.slice(5,8);
-    // // let makeoutTrackArt = makeoutTracks.map(function(d){
-    // //     return d[1][0].album
-    // // });
-    // //
-    // // imagesPreloaded = await preloadImages(makeoutTrackArt);
-    // // await makeOutChoose([makeoutTracks,imagesPreloaded]).then(scrollBottom)
-    // // incrementScore(30+Math.floor(Math.random()*10));
-    // // response = ["omfg","yeah makes sense","nooooooooooooooo"];
-    // // await typeOutText.typeOut(response[Math.floor(Math.random() * response.length)],".chat-wrapper").then(scrollBottom)
-    // //
-
-    // //********** 3
-
-
-
-    // await typeOutText.typeOut("Fuck marry kill. Choose fast.",".chat-wrapper").then(scrollBottom)
-
-    // if(clientParam){
-    //     await fuckMarryKill([coverFlowImages.slice(11,14).map(d => {
-    //         return {name:d.item.attributes.artistName,image:d.image};
-    //     }),coverFlowImages.slice(11,14)],"apple")
-    //     .then(scrollBottom)
+    // let randomSong = Math.random();
+    // if(randomSong < .50){
+    //   await typeOutText.typeOut("Do you know this song?",".chat-wrapper").then(scrollBottom)
+    //   await appendAudio("https://p.scdn.co/mp3-preview/baf1953982893c37fb13b65c6b7de4a8e543c1a7?cid=774b29d4f13844c495f206cafdad9c86",".chat-wrapper").then(scrollBottom);
+    //   response = await appendOptions(["Yes","No"],".chat-wrapper")
+    //   stopPreview();
+    //   incrementScore(30+Math.floor(Math.random()*10));
+    //
+    //   if(response[0] == "Yes"){
+    //       await typeOutText.typeOut("Do you like it?",".chat-wrapper").then(scrollBottom)
+    //       response = await appendOptions(["Yes","No","Kind of"],".chat-wrapper")
+    //       await typeOutText.typeOut("Makes sense.",".chat-wrapper").then(scrollBottom)
+    //   }
+    //   else {
+    //       await typeOutText.typeOut("Yeah I figured.",".chat-wrapper").then(scrollBottom)
+    //   }
     // }
     // else {
-    //     await fuckMarryKill([artistsLong.slice(1,4),artistsLong.slice(1,4)],"spotify").then(scrollBottom)
+    //   await typeOutText.typeOut("Do you like this song? ",".chat-wrapper").then(scrollBottom)
+    //   await appendAudio("https://p.scdn.co/mp3-preview/21b9abd3cd2eea634e17a917196fdd5ba2e82670?cid=774b29d4f13844c495f206cafdad9c86",".chat-wrapper").then(scrollBottom);
+    //   response = await appendOptions(["Yes","No","Hell no"],".chat-wrapper")
+    //   stopPreview();
+    //   incrementScore(20+Math.floor(Math.random()*10));
+    //
+    //   if(response[0] == "Yes"){
+    //
+    //       await appendThinking(".chat-wrapper").then(scrollBottom)
+    //       await sleeper(2000);
+    //       await removeThinking(".chat-wrapper").then(scrollBottom)
+    //       await sleeper(1000);
+    //       await appendThinking(".chat-wrapper").then(scrollBottom)
+    //       await sleeper(1000);
+    //       await removeThinking(".chat-wrapper").then(scrollBottom)
+    //
+    //       await typeOutText.typeOut("okay things are making more sense now...",".chat-wrapper").then(scrollBottom)
+    //
+    //   }
+    //   else if(response[0] == "No") {
+    //       await typeOutText.typeOut("Seriously? It's fine if you do.",".chat-wrapper").then(scrollBottom)
+    //       response = await appendOptions(["okay I do","no way"],".chat-wrapper")
+    //       if(response[0] == "okay I do"){
+    //           await typeOutText.typeOut("lolololololololol",".chat-wrapper").then(scrollBottom)
+    //           await typeOutText.typeOut("sorry i meant to send that to someone else",".chat-wrapper").then(scrollBottom)
+    //       }
+    //       else {
+    //           await typeOutText.typeOut("Oh watch out everybody we got a cool person over here!",".chat-wrapper").then(scrollBottom)
+    //       }
+    //   }
+    //   else {
+    //       await typeOutText.typeOut("Who you trying to impress?",".chat-wrapper").then(scrollBottom)
+    //       await typeOutText.typeOut("Let's keep going",".chat-wrapper").then(scrollBottom)
+    //   }
     // }
+    //
+    // await typeOutText.typeOut("Which record have you made out to?",".chat-wrapper").then(scrollBottom)
+    //
+    // let makeoutTracks = d3.groups(tracks,( d => d.album.name ))//.sort(function(a,b){return b[1].length - a[1].length });
+    //
+    // makeoutTracks = makeoutTracks.slice(5,8);
+    // let makeoutTrackArt = makeoutTracks.map(function(d){
+    //     return d[1][0].album
+    // });
+    //
+    // imagesPreloaded = await preloadImages(makeoutTrackArt);
+    // await makeOutChoose([makeoutTracks,imagesPreloaded]).then(scrollBottom)
+    // incrementScore(30+Math.floor(Math.random()*10));
+    // response = ["omfg","yeah makes sense","nooooooooooooooo"];
+    // await typeOutText.typeOut(response[Math.floor(Math.random() * response.length)],".chat-wrapper").then(scrollBottom)
+    //
+
+    //********** 3
 
 
-    // await sleeper(1000);
-    // await appendThinking(".chat-wrapper").then(scrollBottom)
-    // await sleeper(2000);
-    // await removeThinking(".chat-wrapper").then(scrollBottom)
-    // incrementScore(20+Math.floor(Math.random()*10));
-    // response = ["Gross.","Whoa.", "Uhhhhhhhhhhhhh... cool.","Oh you went there...","Let's just leave that there."];
-    // await typeOutText.typeOut(response[Math.floor(Math.random() * response.length)],".chat-wrapper").then(scrollBottom);
 
-    // await typeOutText.typeOut("Have you been to Coachella?",".chat-wrapper").then(scrollBottom)
+    await typeOutText.typeOut("Fuck marry kill. Choose fast.",".chat-wrapper").then(scrollBottom)
+
+    if(clientParam){
+        await fuckMarryKill([coverFlowImages.slice(11,14).map(d => {
+            return {name:d.item.attributes.artistName,image:d.image};
+        }),coverFlowImages.slice(11,14)],"apple")
+        .then(scrollBottom)
+    }
+    else {
+        await fuckMarryKill([artistsLong.slice(1,4),artistsLong.slice(1,4)],"spotify").then(scrollBottom)
+    }
+
+
+    await sleeper(1000);
+    await appendThinking(".chat-wrapper").then(scrollBottom)
+    await sleeper(2000);
+    await removeThinking(".chat-wrapper").then(scrollBottom)
+    incrementScore(20+Math.floor(Math.random()*10));
+    response = ["Gross.","Whoa.", "Uhhhhhhhhhhhhh... cool.","Oh you went there...","Let's just leave that there."];
+    await typeOutText.typeOut(response[Math.floor(Math.random() * response.length)],".chat-wrapper").then(scrollBottom);
+
+    await typeOutText.typeOut("Have you been to Coachella?",".chat-wrapper").then(scrollBottom)
+    response = await appendOptions(["yes","no"],".chat-wrapper")
+    incrementScore(18+Math.floor(Math.random()*10));
+    await typeOutText.typeOut("Clearly.",".chat-wrapper").then(scrollBottom)
+
+
+    // await typeOutText.typeOut("Do you get your coffee at Starbucks?",".chat-wrapper").then(scrollBottom)
     // response = await appendOptions(["yes","no"],".chat-wrapper")
-    // incrementScore(18+Math.floor(Math.random()*10));
-    // await typeOutText.typeOut("Clearly.",".chat-wrapper").then(scrollBottom)
+    // // await typeOutText.typeOut("Yeah i thought so",".chat-wrapper").then(scrollBottom)
 
+    incrementScore(16+Math.floor(Math.random()*10));
 
-    // // await typeOutText.typeOut("Do you get your coffee at Starbucks?",".chat-wrapper").then(scrollBottom)
-    // // response = await appendOptions(["yes","no"],".chat-wrapper")
-    // // // await typeOutText.typeOut("Yeah i thought so",".chat-wrapper").then(scrollBottom)
+    response = ["Well this has been... interesting.","That was exhausting.","Well I'm lightly nauseated."];
+    await typeOutText.typeOut(response[Math.floor(Math.random() * response.length)],".chat-wrapper").then(scrollBottom);
 
-    // incrementScore(16+Math.floor(Math.random()*10));
+    await typeOutText.typeOut("Let's get your final score.",".chat-wrapper",2000).then(scrollBottom)
 
-    // response = ["Well this has been... interesting.","That was exhausting.","Well I'm lightly nauseated."];
-    // await typeOutText.typeOut(response[Math.floor(Math.random() * response.length)],".chat-wrapper").then(scrollBottom);
-
-    // await typeOutText.typeOut("Let's get your final score.",".chat-wrapper",2000).then(scrollBottom)
-
-    // //********** 3
+    //********** 3
 
     finalScore = incrementScore(1+Math.floor(Math.random()*10));
 
     console.log(data)
 
-    return [finalScore,coverFlowImages,data];
+    return [finalScore,coverFlowImages,data,setupMusicKit];
 
 
 

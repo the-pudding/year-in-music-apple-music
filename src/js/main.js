@@ -54,6 +54,7 @@ async function init() {
 
   let client = urlParameter.get("client");
 
+  let deauth = urlParameter.get("deauth");
 
 
   //if already have token, start on second slide
@@ -73,7 +74,7 @@ async function init() {
     let dataOutput = await getData.init(token);
     let fragments = await getFragments.init();
 
-    let loadingOutput = await loadingSection.init(dataOutput,token,client);
+    let loadingOutput = await loadingSection.init(dataOutput,token,client,deauth);
     // let finalScore = 12;
     d3.select(".swiper-container").remove();
     d3.select(".cover-wrapper").remove();
@@ -85,15 +86,18 @@ async function init() {
       await swiper.slideNext(0);
       await swiper.slideNext(0);
 
+      d3.select(".swiper-container-2").remove();
+
+
       let fragments = await getFragments.init();
 
 
-      let loadingOutput = await loadingSection.init(null,token,client);
+      let loadingOutput = await loadingSection.init(null,token,client,deauth);
       // let finalScore = 12;
       d3.select(".swiper-container").remove();
       d3.select(".cover-wrapper").remove();
       //await swiper.slideNext();
-      await scoreSection.init(loadingOutput[2],token, fragments,loadingOutput,"apple")
+      await scoreSection.init(loadingOutput[2],token, fragments,loadingOutput,"apple",loadingOutput[3])
 
 
   }
@@ -101,9 +105,11 @@ async function init() {
 
   else {
 
+    await introPage.init(swiper); 
+    
+    
 
-    await introPage.init(swiper);  
-    // await aiLoading.init();
+    await aiLoading.init();
     await swiper.slideNext();
   
     
@@ -112,7 +118,7 @@ async function init() {
 
     console.log(client);
     
-    await loadingSection.init(null,token,client);
+    await loadingSection.init(null,token,client,deauth);
   }
 
 

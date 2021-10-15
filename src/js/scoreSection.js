@@ -719,7 +719,7 @@ function getClosestImage(imageArray){
 }
 
 
-async function init(data,token, fragments, loadingOutput,platform){
+async function init(data,token, fragments, loadingOutput,platform,setupMusicKit){
 
 
     platformSet = platform;
@@ -767,7 +767,10 @@ async function init(data,token, fragments, loadingOutput,platform){
         return image;
       }
       else {
-        return d.item.image;
+
+
+        console.log(d.item);
+        return d.item.image.replace("{w}x{h}bb.jpeg","240x240bb.jpeg").replace("{w}x{h}bb.jpg","240x240bb.jpg");
       }
 
     })
@@ -889,7 +892,12 @@ async function init(data,token, fragments, loadingOutput,platform){
 
     reportContainer.append("p")
         .attr("class","top-margin bold")
-        .text("You stan these artists to an uncomfortable extent:")
+        .text(function(d){
+          if(platformSet == "apple"){
+            return "You might want to take a break from these artists:"
+          }
+          return "You stan these artists to an uncomfortable extent:"
+        })
 
     reportContainer.append("div")
         .append("ul")
@@ -1114,9 +1122,28 @@ async function init(data,token, fragments, loadingOutput,platform){
           .attr("target","_blank")
           .html('<button type="button" name="button">Become a Patron</button>')
 
+
+
+          
       reportContainer.append("p")
           .attr("class","top-margin")
-          .html('You can disconnect this project from your Spotify account <a href="https://www.spotify.com/account/apps/">here</a> under the app name &ldquo;Bad Music&rdquo;. This project does not store any Spotify data.')
+          .html(function(d){
+            if(platformSet == "apple"){
+              return 'You can disconnect this project from your Apple account <span href="">here</span>.'
+            }
+            return 'You can disconnect this project from your Spotify account <a href="https://www.spotify.com/account/apps/">here</a> under the app name &ldquo;Bad Music&rdquo;. This project does not store any Spotify data.'
+          })
+          .each(function(d){
+            d3.select(this).select("span")
+            .style("text-decoration","underline")
+            .style("cursor","pointer")
+            .on("click", async function(d){
+              let appleData = await setupMusicKit.unauthorize().then(async (token) => {
+                location.reload(true);
+              })
+
+            })
+          })
 
       reportContainer.append("p")
           .attr("class","top-margin")
