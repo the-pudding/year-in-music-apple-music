@@ -814,10 +814,9 @@ async function appleSequence(){
             location.href = "/"
         })
     }
-    
-
 
     await typeOutText.typeOut("Alrighty. A new window will pop open asking for your Apple info.",".chat-wrapper",1000).then(scrollBottom)
+    await typeOutText.typeOut("This allows for one-time access to your music history when you visit this site. We don't ever see your username/password and your music data is never saved.",".chat-wrapper",1000).then(scrollBottom)
 
     let response = await appendAppleAuthorization(["Sounds good!","Wait, I'm logging in with my Apple ID??"],".chat-wrapper",setupMusicKit)
 
@@ -912,6 +911,14 @@ async function init(data,token,clientParam,deauth){
         data.recentTracks = data.recentTracks.data;
 
 
+        if(data.forYouPlaylist.length  == 0){
+
+            await typeOutText.typeOut("Missing data...",".chat-wrapper",500).then(scrollBottom)
+
+
+            data.forYouPlaylist = data.recentTracks;
+        }
+
 
         let coverFlowImagesUnfiltered = data.forYouPlaylist
             .map(function(d){
@@ -928,8 +935,6 @@ async function init(data,token,clientParam,deauth){
           }).map(function(d){
               return d[1][0];
         });
-
-        console.log(artistsRecent);
 
         coverFlowImagesUnfiltered = coverFlowImagesUnfiltered.filter(function (el) {
             return el.image != null;
@@ -956,8 +961,6 @@ async function init(data,token,clientParam,deauth){
         //for are you ok, listening to alot of x recently
         artistRecentUrl = artistsRecent[0];
 
-        console.log(artistRecentUrl);
-
         // for of course artist
         let artistObservationThreePos = 13;
         if(artistRecentUrl){
@@ -968,10 +971,6 @@ async function init(data,token,clientParam,deauth){
 
 
         coverFlowImages.splice(artistObservationThreePos,0,artistObservationThree)
-
-
-        console.log("artist recent");
-        console.log(artistRecentUrl);
 
         if(artistRecentUrl){
             coverFlowImages.splice(12,0,artistRecentUrl)
