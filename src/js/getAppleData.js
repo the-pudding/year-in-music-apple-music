@@ -52,7 +52,7 @@ async function init(setupMusicKit,token){
 
     for (let playlist in reco){
         let title = reco[playlist].attributes.title.stringForDisplay;
-        if(title == "sdf for You"){
+        if(title == "Made for You"){
             let items = reco[playlist].relationships.contents.data;
             for (let item in items){
                 if(items[item].attributes.name == "Favorites Mix"){

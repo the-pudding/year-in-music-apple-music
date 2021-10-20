@@ -890,43 +890,48 @@ async function init(data,token, fragments, loadingOutput,platform,setupMusicKit)
             return parseTrackName.parseTrack(d);
         })
 
-    reportContainer.append("p")
-        .attr("class","top-margin bold")
-        .text(function(d){
-          if(platformSet == "apple"){
-            return "You might want to take a break from these artists:"
-          }
-          return "You stan these artists to an uncomfortable extent:"
-        })
+    if(platformSet != "apple"){
+      
+      reportContainer.append("p")
+      .attr("class","top-margin bold")
+      .text(function(d){
+        if(platformSet == "apple"){
+          return "You might want to take a break from these artists:"
+        }
+        return "You stan these artists to an uncomfortable extent:"
+      })
 
-    reportContainer.append("div")
-        .append("ul")
-        .selectAll("li")
-        .data(function(d){
-          if(platformSet != "apple"){
-            return data.artists.filter(d => d.timeFrame == "long_term")[0].artistData.slice(0,5)
-          }
-
-          let grouped = d3.groups(
-            data.forYouPlaylist.map(function(d){
-                return {name:d.attributes.artistName};
-              })
-              ,function(d){return d.name})
-              .sort(function(a,b){
-                  return b[1].length - a[1].length;
-              })
-              .map(function(d){return {name:d[0]}}).slice(0,5);
-
-          return grouped
-        })
-        .enter()
-        .append("li")
-        .text(function(d){
-            if(d.hasOwnProperty('name')){
-                return d.name;
+      reportContainer.append("div")
+          .append("ul")
+          .selectAll("li")
+          .data(function(d){
+            if(platformSet != "apple"){
+              return data.artists.filter(d => d.timeFrame == "long_term")[0].artistData.slice(0,5)
             }
-            return null;
-        })
+
+            let grouped = d3.groups(
+              data.forYouPlaylist.map(function(d){
+                  return {name:d.attributes.artistName};
+                })
+                ,function(d){return d.name})
+                .sort(function(a,b){
+                    return b[1].length - a[1].length;
+                })
+                .map(function(d){return {name:d[0]}}).slice(0,5);
+
+            return grouped
+          })
+          .enter()
+          .append("li")
+          .text(function(d){
+              if(d.hasOwnProperty('name')){
+                  return d.name;
+              }
+              return null;
+          })
+
+    }
+
 
 
     let basicWordingMap = {
