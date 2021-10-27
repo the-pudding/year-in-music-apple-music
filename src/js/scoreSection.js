@@ -201,9 +201,13 @@ function determineReleaseYears(data){
     }).map(function(d){
       return d[1][0];
     })
-    .map(function(d){
-      return {name:d.name, artists:[{name:d.item.attributes.artistName}], item:d.item};
-    })
+
+    if(platformSet == "apple"){
+      tracksInAvgReleaseDecade = tracksInAvgReleaseDecade.map(function(d){
+        return {name:d.name, artists:[{name:d.item.attributes.artistName}], item:d.item};
+      })
+    }
+
 
 
     console.log(tracksInAvgReleaseDecade);
@@ -215,6 +219,8 @@ function determineReleaseYears(data){
           if(platformSet != "apple"){
                 return +d.album.release_date.slice(0,4) < avgReleaseDate
           }
+          console.log(d);
+
           return +d.item.attributes.releaseDate.slice(0,4) < avgReleaseDate
         })
         .sort(function(a,b){
@@ -304,7 +310,8 @@ function determineAlbumFragment(data,fragments){
         .map(function(d){
           return d.trackData
         }).flat(1);
-    } {
+    } 
+    else {
       albumsAll = data.recentTracks.map(function(d){
         return {album: {name:d.attributes.albumName}};
       })
@@ -418,7 +425,7 @@ function determineTrackFragment(data,fragments){
     let tracksAll = null;
 
     if(platformSet != "apple"){
-      data.tracks.filter(function(d){return d.timeFrame != "short_term"}).map(function(d){ return d.trackData}).flat(1);
+      tracksAll = data.tracks.filter(function(d){return d.timeFrame != "short_term"}).map(function(d){ return d.trackData}).flat(1);
     } else {
       tracksAll = data.tracks;
     }
