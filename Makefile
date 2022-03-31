@@ -28,7 +28,7 @@ aws-htmljs:
 
 
 aws-cache:
-	aws cloudfront create-invalidation --distribution-id E13X38CRR4E04D --paths '/2021/10/judge-my-music*'
-	# aws cloudfront create-invalidation --distribution-id E13X38CRR4E04D --paths '/2020/12/judge-my-spotify*'
+	# aws cloudfront create-invalidation --distribution-id E13X38CRR4E04D --paths '/2021/10/judge-my-music*'
+	aws cloudfront create-invalidation --distribution-id E13X38CRR4E04D --paths '/2020/12/judge-my-spotify*'
 
 pudding: aws-assets aws-htmljs aws-cache archive
