@@ -151,21 +151,20 @@ function appendLogin(choices,container){
                     let aTag = d3.select(this)
                         .append("a")
                         //  .attr("href","https://stark-ocean-68179.herokuapp.com/login")
-                         .attr("href","https://dreadful-spider-05298.herokuapp.com/login")
+                         .attr("href","https://music-bot-pudding.herokuapp.com/login")
 
                     aTag.on("click",function(d){
                       d3.select(this).select("span").style("background-color","#000000").style("color","white").html("Connecting...")
                     })
 
                     aTag.append("span")
-                        //.attr("href","https://accounts.spotify.com/en/login?continue=https:%2F%2Faccounts.spotify.com%2Fauthorize%3Fscope%3Duser-read-private%2Buser-top-read%2Buser-follow-read%2Buser-library-read%2Bplaylist-read-private%2Bplaylist-read-collaborative%26response_type%3Dcode%26redirect_uri%3Dhttp%253A%252F%252Fdreadful-spider-05298.herokuapp.com%252Fcallback%26state%3Dabc%26client_id%3D233e9b508503421e9441079954508772")
                         .html('<svg class="spotify-logo" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none"> <path d="M8.97285 0C13.9281 0 17.9453 4.01711 17.9453 8.97236C17.9453 13.9278 13.9281 17.9446 8.97285 17.9446C4.01706 17.9446 0.000276566 13.9278 0.000276566 8.97236C0.000276566 4.01743 4.01706 0.000428569 8.97295 0.000428569L8.97285 0ZM4.85813 12.9407C5.01885 13.2043 5.36385 13.2879 5.62742 13.1261C7.73406 11.8393 10.3861 11.5479 13.5093 12.2614C13.8102 12.33 14.1102 12.1414 14.1788 11.8404C14.2477 11.5393 14.0599 11.2393 13.7582 11.1707C10.3403 10.3895 7.40856 10.7261 5.04349 12.1714C4.77992 12.3332 4.69635 12.6771 4.85813 12.9407ZM3.75992 10.4973C3.96242 10.8268 4.39313 10.9307 4.72206 10.7282C7.13385 9.24546 10.8102 8.81614 13.6629 9.68207C14.0329 9.79382 14.4236 9.58532 14.5359 9.216C14.6473 8.84604 14.4387 8.45604 14.0694 8.34354C10.8109 7.35482 6.75992 7.83375 3.99028 9.53572C3.66135 9.73822 3.55742 10.1689 3.75992 10.4974V10.4973ZM3.66563 7.95332C6.55742 6.23571 11.3285 6.07779 14.0895 6.91575C14.5328 7.05021 15.0017 6.79993 15.136 6.35657C15.2704 5.913 15.0203 5.44446 14.5766 5.30968C11.4072 4.34754 6.13849 4.53343 2.80913 6.50989C2.40949 6.74657 2.27878 7.26161 2.51556 7.65986C2.75128 8.05864 3.26771 8.19011 3.66521 7.95332H3.66563Z" fill="black"/> </svg> Log in with Spotify')
                         ;
                 }
                 else if(i==1){
                     let aTag = d3.select(this)
                         .append("a")
-                        .attr("href","https://safe-ocean-35530.herokuapp.com/applemusic")
+                        .attr("href","https://music-bot-pudding.herokuapp.com/applemusic")
                         //   .attr("href","https://mysterious-harbor-74984.herokuapp.com/applemusic")
 
                     aTag.on("click",function(d){
@@ -173,7 +172,6 @@ function appendLogin(choices,container){
                     })
 
                     aTag.append("span")
-                        //.attr("href","https://accounts.spotify.com/en/login?continue=https:%2F%2Faccounts.spotify.com%2Fauthorize%3Fscope%3Duser-read-private%2Buser-top-read%2Buser-follow-read%2Buser-library-read%2Bplaylist-read-private%2Bplaylist-read-collaborative%26response_type%3Dcode%26redirect_uri%3Dhttp%253A%252F%252Fdreadful-spider-05298.herokuapp.com%252Fcallback%26state%3Dabc%26client_id%3D233e9b508503421e9441079954508772")
                         .html('<svg class="apple-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 84.3 20.7" style="enable-background:new 0 0 84.3 20.7;" xml:space="preserve"> <path d="M35.4,20.1V6.6h-0.1l-5.4,13.5h-2.1L22.4,6.6h-0.1v13.5h-2.5V1.8H23l5.8,14.6h0.1l5.8-14.6H38v18.3L35.4,20.1L35.4,20.1z   M52.1,20.1h-2.6v-2.3h-0.1c-0.7,1.6-2.1,2.5-4.1,2.5c-2.9,0-4.6-1.9-4.6-5V6.7h2.7v8.1c0,2,1,3.1,2.8,3.1c2,0,3.1-1.4,3.1-3.5V6.7  h2.7L52.1,20.1L52.1,20.1z M59.5,6.5c3.1,0,5,1.7,5.1,4.2h-2.5c-0.2-1.3-1.1-2.1-2.6-2.1C58,8.6,57,9.3,57,10.4c0,0.8,0.6,1.4,2,1.7  l2.1,0.5c2.7,0.6,3.7,1.7,3.7,3.6c0,2.4-2.2,4.1-5.3,4.1c-3.3,0-5.3-1.6-5.5-4.2h2.7c0.2,1.4,1.2,2.1,2.8,2.1c1.6,0,2.6-0.7,2.6-1.8  c0-0.9-0.5-1.4-1.9-1.7l-2.1-0.5c-2.5-0.6-3.7-1.8-3.7-3.8C54.4,8.1,56.4,6.5,59.5,6.5z M66.8,3.2c0-0.9,0.7-1.6,1.6-1.6  c0.9,0,1.6,0.7,1.6,1.6c0,0.9-0.7,1.6-1.6,1.6C67.5,4.8,66.8,4.1,66.8,3.2L66.8,3.2z M67,6.7h2.7v13.4H67V6.7z M81.1,11.3  c-0.3-1.4-1.3-2.6-3.1-2.6c-2.1,0-3.5,1.8-3.5,4.6c0,2.9,1.4,4.6,3.5,4.6c1.7,0,2.7-0.9,3.1-2.5h2.6c-0.3,2.8-2.5,4.8-5.7,4.8  c-3.8,0-6.2-2.6-6.2-6.9c0-4.2,2.4-6.9,6.2-6.9c3.4,0,5.4,2.2,5.7,4.8L81.1,11.3L81.1,11.3z M11.5,3.6C10.8,4.4,9.7,5.1,8.6,5  C8.4,3.8,9,2.6,9.6,1.9c0.7-0.9,1.9-1.5,2.9-1.5C12.6,1.5,12.2,2.7,11.5,3.6L11.5,3.6z M12.5,5.2c0.6,0,2.4,0.2,3.6,2  c-0.1,0.1-2.1,1.3-2.1,3.8c0,3,2.6,4,2.6,4c0,0.1-0.4,1.4-1.3,2.8c-0.8,1.2-1.7,2.4-3,2.4c-1.3,0-1.7-0.8-3.2-0.8  c-1.5,0-2,0.8-3.2,0.8c-1.3,0-2.3-1.3-3.1-2.5c-1.7-2.5-3-7-1.2-10c0.8-1.5,2.4-2.5,4-2.5c1.3,0,2.5,0.9,3.2,0.9  C9.5,6.1,10.9,5.1,12.5,5.2L12.5,5.2z"/> </svg> Log in with Apple Music')
                         ;
                 }
@@ -250,8 +248,8 @@ async function appendAppleAuthorizationLogOut(choices,container,setupMusicKit){
 
                 console.log("click");
 
-  
-                
+
+
 
                 // let selected = d3.select(this).text();
 
@@ -316,15 +314,15 @@ async function appendAppleAuthorization(choices,container,setupMusicKit){
                     let appleData = await setupMusicKit.authorize().then(async (token) => {
                         return await getAppleData.init(setupMusicKit,token);
                     })
-    
-    
- 
+
+
+
                     resolve([selected,optionWrapper.node(),appleData]);
                 }
                 else {
                     resolve([selected,optionWrapper.node(),null]);
                 }
-                
+
             })
             ;
 
@@ -833,7 +831,7 @@ async function appleSequence(){
             await typeOutText.typeOut("Alrighty. A new window will pop open asking for your Apple info.",".chat-wrapper",1000).then(scrollBottom)
 
             let response = await appendAppleAuthorization(["Sounds good!","Wait, I'm logging in with my Apple ID??"],".chat-wrapper",setupMusicKit)
-        
+
         }
     }
 
