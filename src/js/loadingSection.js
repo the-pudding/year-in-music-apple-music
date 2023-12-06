@@ -35,6 +35,7 @@ let responses = null;
 let input = null;
 let artistsRecent = null;
 let artistsLong = null;
+let platform = null;
 
 let loginResponse = null;
 
@@ -150,10 +151,11 @@ function appendLogin(choices,container){
                 if(i==0){
                     let aTag = d3.select(this)
                         .append("a")
-                        //  .attr("href","https://stark-ocean-68179.herokuapp.com/login")
+                        //  .attr("href","http://stark-ocean-68179.herokuapp.com/")
                          .attr("href","https://music-bot-pudding.herokuapp.com/login")
 
                     aTag.on("click",function(d){
+                        platform = "spotify";
                       d3.select(this).select("span").style("background-color","#000000").style("color","white").html("Connecting...")
                     })
 
@@ -168,6 +170,7 @@ function appendLogin(choices,container){
                         //   .attr("href","https://mysterious-harbor-74984.herokuapp.com/applemusic")
 
                     aTag.on("click",function(d){
+                        platform = "apple";
                       d3.select(this).select("span").style("background-color","#000000").style("color","white").html("Connecting...")
                     })
 
@@ -1155,7 +1158,7 @@ async function init(data,token,clientParam,deauth){
     }
     else if(response[0] == "No") {
         let adjust = ""
-        if(platform != "apple"){
+        if(platform !== "apple"){
           adjust = "top 10"
         }
         await typeOutText.typeOut(`Weird, cause it's definitely in your ${adjust} most-played.`,".chat-wrapper",0).then(scrollBottom)
