@@ -27,7 +27,7 @@ function parseFragments(data,source){
 
 function init(){
 
-    return loadData(['fragments-artists-7.csv', 'fragments-albums-3.csv','fragments-genres-2.csv','fragments-tracks-2.csv']).then(result => {
+    return loadData(['fragments-artists-2023-update.csv', 'fragments-albums-3.csv','fragments-genres-2.csv','fragments-tracks-2.csv']).then(result => {
 
         let parsedArtistFragments = parseFragments(result[0],"artist");
         let parsedAlbumFragments = parseFragments(result[1],"album");

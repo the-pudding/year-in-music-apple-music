@@ -1177,7 +1177,7 @@ async function init(data,token, fragments, loadingOutput,platform,setupMusicKit)
 
       reportContainer.append("p")
           .attr("class","top-margin")
-          .html('The project is by <a href="https://pudding.cool/author/mike-lacher/">Mike Lacher</a> & <a href="https://pudding.cool/author/matt-daniels/">Matt Daniels</a> for <a href="https://pudding.cool">The Pudding</a>. Additional support from <a href="https://www.omrirolan.com/">Omri Rolan</a>, <a href="https://pudding.cool/author/kevin-litman-navarro/">Kevin Litman-Navarro</a>.')
+          .html('The project is by <a href="https://pudding.cool/author/mike-lacher/">Mike Lacher</a> & <a href="https://pudding.cool/author/matt-daniels/">Matt Daniels</a> for <a href="https://pudding.cool">The Pudding</a>. Additional support from <a href="https://www.omrirolan.com/">Omri Rolan</a>, <a href="https://pudding.cool/author/kevin-litman-navarro/">Kevin Litman-Navarro</a>, <a href="https://pudding.cool/author/jan-diehm/">Jan Diehm</a>, and <a href="https://pudding.cool/author/caitlyn-ralph/">Caitlyn Ralph</a>.')
 
       // d3.select(".ascii-art").style("height","auto")
       d3.select("footer").style("display","block")
